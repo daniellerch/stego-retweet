@@ -103,7 +103,7 @@ def main():
     if sys.argv[2] == 'hide':
 
         message = sys.argv[3]
-        print message
+        #print message
         #print "cover shape:", C.shape
 
         to_retweet=[]
@@ -131,7 +131,7 @@ def main():
             m_recovered=ME_unhide_block(M, S) 
             #print "extracted =", m_recovered 
             message += bits_to_str(m_recovered)
-        print message
+        print "message:", message
 
 if __name__ == "__main__":
     main()
