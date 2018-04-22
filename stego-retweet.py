@@ -1,8 +1,11 @@
 #!/usr/bin/python
 
 import sys
+import md5
 import json
 import math
+import time
+import datetime
 import textwrap
 import numpy as np
 
@@ -10,23 +13,24 @@ import numpy as np
 BYTES_PER_TWEET=2
 BLOCK_SIZE = 2**(BYTES_PER_TWEET*8) - 1
 
-def load_data(path):
-    with open(path) as f:
-        json_list = f.readlines()
-    
-    ids=[]
-    data=[]
-    for i, j in enumerate(json_list):
-        tweet=json.loads(j)
-        data.append(len(tweet["text"])%2)
-        ids.append(tweet["id"])
+def get_dates(max_date):
+    time_max = datetime.datetime.strptime(max_date, "%Y-%m-%d")
+    ts = int(time.mktime(time_max.timetuple()))
+    n = 0
+    dates = []
+    while n<BLOCK_SIZE:
+        dates.append(ts)
+        ts -= 60
+        n += 1
+    return dates
 
-        if i>=BLOCK_SIZE-1:
-            break
-
-    X = np.array(data)
-    return X, ids
-
+def get_cover(dates):
+    bits = []
+    for d in dates:
+        hx = md5.new(str(d)).hexdigest()
+        b = int(hx, 16)%2
+        bits.append(b)
+    return np.array(bits)
 
 def prepare_M(n_bits):
     M=[]
@@ -91,12 +95,13 @@ def main():
 
     if len(sys.argv) != 4:
         print "Usage: "
-        print "   %s <tweets file> <hide> <text>" % (sys.argv[0])
-        print "   %s <tweets file> <unhide> <tweet ids>" % (sys.argv[0])
+        print "   %s <YY-MM-DD> <hide> <text>" % (sys.argv[0])
+        print "   %s <YY-MM-DD> <unhide> <tweet ids>" % (sys.argv[0])
         print 
         sys.exit(0)
 
-    C, ids = load_data(sys.argv[1]) 
+    dates = get_dates(sys.argv[1])
+    C = get_cover(dates)
     M=prepare_M(BYTES_PER_TWEET*8) 
     #print "M:", M.shape
 
@@ -113,7 +118,8 @@ def main():
             ##print "original = ", m 
 
             S, i = ME_hide_block(M, C, m) 
-            to_retweet.append(ids[i])
+            d = datetime.datetime.fromtimestamp(dates[i]).strftime('%Y%m%d%H%M')
+            to_retweet.append(d)
 
             #m_recovered=ME_unhide_block(M, S) 
             #print "extracted =", m_recovered 
@@ -125,7 +131,12 @@ def main():
         retweets = sys.argv[3].split(",")
         message=''
         for r in retweets:
-            idx = ids.index(r)
+            time_max = datetime.datetime.strptime(r, "%Y%m%d%H%M")
+            ts = int(time.mktime(time_max.timetuple()))
+            try:
+                idx = dates.index(ts)
+            except:
+                print "Date not found"
             S = C.copy()
             S[idx]=not S[idx]
             m_recovered=ME_unhide_block(M, S) 
