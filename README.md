@@ -1,2 +1,2 @@
-# stego-retweet
-Steganography in Twitter using retweets and matrix embedding
+# stego-like
+Steganography in social networks using likes, retweets and other interactions
