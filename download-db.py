@@ -2,7 +2,7 @@
 
 import os
 import sys
-from stegolike.download import get_tweets
+from srt.download import get_tweets
 
 
 def main():

@@ -1,2 +1,3 @@
-# stego-like
-Steganography in social networks using likes, retweets and other interactions
+# stego-retweet
+Steganography in Twitter using retweets and likes
+

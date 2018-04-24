@@ -4,8 +4,8 @@ import json
 import time
 import hashlib
 import textwrap
-from stegolike import config
-from stegolike.encoding import str_to_code, code_to_str
+from srt import config
+from srt.encoding import str_to_code, code_to_str
 
 def load_data(path):
     with open(path) as f:
@@ -15,14 +15,14 @@ def load_data(path):
         tweet=json.loads(j)
 
         hx = hashlib.md5(tweet["text"].encode('utf-8')).hexdigest()
-        seq = int(hx, 16) % config.STEGOLIKE_NUM_MESSAGES
-        #seq = int(tweet["date"]) % config.STEGOLIKE_NUM_MESSAGES
+        seq = int(hx, 16) % config.NUM_MESSAGES
+        #seq = int(tweet["date"]) % config.NUM_MESSAGES
 
         data[seq] = tweet["id"]
     return data
 
 def hide(path, data):
-    tw = textwrap.wrap(path, config.STEGOLIKE_CHARS_X_INTERACTION, \
+    tw = textwrap.wrap(path, config.CHARS_X_INTERACTION, \
                        drop_whitespace=False)
     interactions = []
     for mm in tw:

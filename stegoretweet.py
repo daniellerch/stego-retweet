@@ -6,8 +6,8 @@ import json
 import time
 import datetime
 import numpy as np
-from stegolike import config
-from stegolike.twitter import load_data, hide, unhide
+from srt import config
+from srt.twitter import load_data, hide, unhide
 
 
 def main():
@@ -15,7 +15,7 @@ def main():
     if len(sys.argv) != 4:
         print "Usage: "
         print "   %s <db> <hide> <text>" % (sys.argv[0])
-        print "   %s <db> <unhide> <tweet ids>" % (sys.argv[0])
+        print "   %s <db> <unhide> <ID string>" % (sys.argv[0])
         print 
         sys.exit(0)
 

@@ -11,9 +11,9 @@ import cookielib
 import urllib
 import urllib2
 from pyquery import PyQuery
-from stegolike import config
+from srt import config
 
-n_tweets = config.STEGOLIKE_NUM_MESSAGES 
+n_tweets = config.NUM_MESSAGES 
 
 def update_progress(progress, cnt):
     sys.stdout.write('\r{0:.2f}%: {1} of {2} (total: {3})'.format(100*float(progress)/n_tweets, progress, n_tweets, cnt))
