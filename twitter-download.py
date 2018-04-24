@@ -2,7 +2,7 @@
 
 import os
 import sys
-from stegolike import download
+from stegolike.download import get_tweets
 
 
 def main():
@@ -18,7 +18,7 @@ def main():
 
     if os.path.isfile(sys.argv[2]):
         os.remove(sys.argv[2])
-    download.get_tweets(sys.argv[1], sys.argv[2])
+    get_tweets(sys.argv[1], sys.argv[2])
 
 if __name__ == "__main__":
     main()
