@@ -24,20 +24,34 @@ def main():
     data_r = {v: k for k, v in data.items()}
 
     if sys.argv[2] == 'hide':
-        to_retweet=[]
+        to_like=[]
         tw = textwrap.wrap(sys.argv[3], config.STEGOLIKE_CHARS_X_INTERACTION, \
                            drop_whitespace=False)
+        interactions = []
         for mm in tw:
-            m = str_to_code(mm)
-            to_retweet.append(data[m-1])
+            base, offset = str_to_code(mm)
+            if offset==0:
+                interactions.append(str(data[base])+':R')
+            elif offset==1:
+                interactions.append(str(data[base])+':L')
+            else:
+                interactions.append(str(data[base])+':RL')
 
-        print ','.join(to_retweet)
+        print ','.join(interactions)
 
     elif sys.argv[2] == 'unhide':
-        retweets = sys.argv[3].split(",")
+        interactions = sys.argv[3].split(",")
         message=''
-        for r in retweets:
-            message += code_to_str(data_r[r]+1)
+        for r in interactions:
+            msg_id, actions = r.split(':')
+            base = data_r[msg_id]
+            offset = 0
+            if 'L' in actions:
+                offset = 1
+            if 'RL' in actions:
+                offset = 2
+
+            message += code_to_str(base, offset)
         print "message:", message
 
 if __name__ == "__main__":

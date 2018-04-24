@@ -13,7 +13,7 @@ import urllib2
 from pyquery import PyQuery
 from stegolike import config
 
-n_tweets = config.STEGOLIKE_NUM_MESSAGES
+n_tweets = config.STEGOLIKE_NUM_MESSAGES 
 
 def update_progress(progress, cnt):
     sys.stdout.write('\r{0:.2f}%: {1} of {2} (total: {3})'.format(100*float(progress)/n_tweets, progress, n_tweets, cnt))
@@ -88,9 +88,9 @@ def get_tweets(search_string, tweets_path):
                 d["date"] = dateSec
                 d["link"] = permalink
 
-                #hx = hashlib.md5(txt.encode('utf-8')).hexdigest()
-                #seq = int(hx, 16)%n_tweets
-                seq = dateSec % n_tweets
+                hx = hashlib.md5(txt.encode('utf-8')).hexdigest()
+                seq = int(hx, 16)%n_tweets
+                #seq = dateSec % n_tweets
                 if seq not in seq_dict:
                     seq_dict[seq]=True
                     seq_count += 1
