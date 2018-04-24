@@ -1,28 +1,6 @@
 #!/usr/bin/python
 
-import sys
-import md5
-import json
-import time
-import hashlib
-import datetime
-import numpy as np
 from stegolike import config
-
-
-def load_data(path):
-    with open(path) as f:
-        json_list = f.readlines()
-    data={}
-    for i, j in enumerate(json_list):
-        tweet=json.loads(j)
-
-        hx = hashlib.md5(tweet["text"].encode('utf-8')).hexdigest()
-        seq = int(hx, 16) % config.STEGOLIKE_NUM_MESSAGES
-        #seq = int(tweet["date"]) % config.STEGOLIKE_NUM_MESSAGES
-
-        data[seq] = tweet["id"]
-    return data
 
 def str_to_code(s):
     while len(s) % config.STEGOLIKE_CHARS_X_INTERACTION != 0:
