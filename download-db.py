@@ -12,7 +12,7 @@ def main():
         print "   %s <search string> <tweets file>" % (sys.argv[0])
         print ""
         print "Example:"
-        print "   %s 'crypto' tweets.db" % (sys.argv[0])
+        print "   %s '#crypto' tweets.db" % (sys.argv[0])
         print 
         sys.exit(0)
 
