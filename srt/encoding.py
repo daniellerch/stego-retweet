@@ -12,7 +12,6 @@ def str_to_code(s):
     code = int(y_str, 2)
     base = int(code / config.AVAILABLE_INTERACTIONS)
     offset = code - (base*3)
-    print "code:", code, "-->", base, offset
     return base, offset
 
 def code_to_str(base, offset):

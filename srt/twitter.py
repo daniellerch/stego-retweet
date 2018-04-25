@@ -15,7 +15,7 @@ def load_data(path):
     data={}
     for i, j in enumerate(json_list):
         tweet=json.loads(j)
-        seq = int(tweet["date"]) % config.NUM_MESSAGES
+        seq = int(tweet["seq"]) % config.NUM_MESSAGES
         data[seq] = tweet["id"]
     return data
 
@@ -25,6 +25,7 @@ def hide(path, data):
     interactions = []
     for mm in tw:
         base, offset = str_to_code(mm)
+        print "hide:", base, offset
         if offset==0:
             interactions.append(str(data[base])+':R')
         elif offset==1:
@@ -42,12 +43,14 @@ def unhide(path):
         base, actions = r.split(':')
         base = int(base)
         print "|", base, "|"
+        print "actions:", actions
         offset = 0
-        if 'L' in actions:
-            offset = 1
         if 'RL' in actions:
             offset = 2
+        elif 'L' in actions:
+            offset = 1
 
+        print "unhide:", base, offset
         message += code_to_str(base, offset)
     return message
 
@@ -81,15 +84,19 @@ def read_message(screen_name):
 
     interactions = ""
     tweets = api.user_timeline(screen_name, count=10)
-    for t in reversed(tweets):
-        ts = int(time.mktime(t.retweeted_status.created_at.timetuple())) + 3600*2
+    for tweet in reversed(tweets):
+        t = tweet
+        if hasattr(tweet, "retweeted_status"):
+            t = tweet.retweeted_status
+        ts = int(time.mktime(t.created_at.timetuple()))
         seq = ts % config.NUM_MESSAGES
-        print t.id, ts, t.retweeted_status.created_at, t.text
+        #print t.id, ts, t.created_at, t.text
         #print json.dumps(t._json, indent=2)
+        #print json.dumps(api.get_status(t.id)._json, indent=2)
         interactions += str(seq)
-        if t.favorited:
+        if tweet.favorited and not tweet.retweeted:
             interactions += ":L"
-        elif t.retweeted:
+        elif tweet.retweeted and not tweet.favorited:
             interactions += ":R"
         else:
             interactions += ":RL"   

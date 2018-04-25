@@ -30,13 +30,21 @@ def get_tweets(search_string, tweets_path):
     cnt = 0
     while True:
         for t in tweepy.Cursor(api.search, q=search_string, include_entities=False, trim_user=True).items():
+            #print json.dumps(t._json, indent=2)
+            #sys.exit(0)
 
-            seq = int(time.mktime(t.created_at.timetuple())) % config.NUM_MESSAGES 
+            id_str = t.id_str
+            created_at = t.created_at
+            if hasattr(t, "retweeted_status"):
+                id_str = t.retweeted_status.id_str
+                created_at = t.retweeted_status.created_at
+
+            seq = int(time.mktime(created_at.timetuple())) % config.NUM_MESSAGES 
             if seq not in seq_dict:
                 seq_dict[seq]=True
                 seq_count += 1
                 with open(tweets_path, 'a+') as f:
-                    f.write('{"seq":'+str(seq)+', "id":'+t.id_str+'}\n')
+                    f.write('{"seq":'+str(seq)+', "id":'+id_str+'}\n')
 
             update_progress(seq_count, cnt, config.NUM_MESSAGES)
 
