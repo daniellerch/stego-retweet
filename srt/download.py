@@ -43,7 +43,7 @@ def get_tweets(search_string, tweets_path):
             if seq_count >= config.NUM_MESSAGES:
                 return
 
-            time.sleep(0.3)
+            time.sleep(0.5)
             cnt += 1
 
         print "retry!"
