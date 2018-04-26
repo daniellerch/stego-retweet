@@ -112,10 +112,9 @@ def read_message(screen_name, words):
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
     interactions = []
-    retweets = api.user_timeline(screen_name, count=10)
-    favorites = api.favorites(screen_name, count=10)
+    retweets = api.user_timeline(screen_name, count=20)
 
-    for t in reversed(retweets+favorites):
+    for t in reversed(retweets):
         seq = -1
         for w in extract_words(t.text):
             if w in words:
