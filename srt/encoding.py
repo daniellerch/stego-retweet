@@ -11,7 +11,7 @@ def str_to_code(s):
     y_str = ''.join(str(a) for a in y)
     code = int(y_str, 2)
     base = int(code / config.AVAILABLE_INTERACTIONS)
-    offset = code - (base*3)
+    offset = code - (base*config.AVAILABLE_INTERACTIONS)
     return base, offset
 
 def code_to_str(base, offset):

@@ -32,34 +32,27 @@ def load_words(path):
         return w
     return []
 
-def find_tweets(seq_list, words):
+def find_tweet(seq, words):
     logging.basicConfig()
     auth = tweepy.OAuthHandler(config.TWITTER_CONSUMER_KEY, config.TWITTER_CONSUMER_SECRET)
     auth.set_access_token(config.TWITTER_KEY, config.TWITTER_SECRET)
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
     
-    def find(id_list):
-        for t in tweepy.Cursor(api.search, q=words[seq], 
-                               include_entities=False, trim_user=True).items():
-            
-            for w in extract_words(t.text):
-                if w not in words:
-                    # print "not in list:", w
-                    continue
-                if w!=words[seq]:
-                    # print "wrong tweet:", w
-                    break
-                id_list.append((t.id, action))
-                #print "save", w, ":", t.text
-                print w
-                return
+    for t in tweepy.Cursor(api.search, q=words[seq], 
+                           include_entities=False, trim_user=True).items():
+        
+        for w in extract_words(t.text):
+            if w not in words:
+                # print "not in list:", w
+                continue
+            if w!=words[seq]:
+                # print "wrong tweet:", w
+                break
+            return t.id
 
-    id_list = []
-    for seq, action in seq_list:
-        find(id_list)
-        time.sleep(0.5) # minimize rate limits effects
+    print "tweet not found:", 
+    sys.exit(0)
 
-    return id_list
 
 
 def hide(path):
@@ -68,11 +61,9 @@ def hide(path):
     interactions = []
     for mm in tw:
         base, offset = str_to_code(mm)
-        print "hide:", base, offset
+        #print "hide:", base, offset
         if offset==0:
             interactions.append((base, 'R'))
-        elif offset==1:
-            interactions.append((base, 'L'))
         else:
             interactions.append((base, 'RL'))
 
@@ -84,36 +75,51 @@ def unhide(seq_list):
     for base, actions in seq_list:
         if base == -1:
             continue
-        #print "|", base, "|"
-        #print "actions:", actions
         offset = 0
         if 'RL' in actions:
-            offset = 2
-        elif 'L' in actions:
             offset = 1
 
-        print "unhide:", base, offset
+        #print "unhide:", base, offset
         message += code_to_str(base, offset)
     return message
 
 
-def send_message(id_list):
-
+def send_message(seq_list, words):
     auth = tweepy.OAuthHandler(config.TWITTER_CONSUMER_KEY, config.TWITTER_CONSUMER_SECRET)
     auth.set_access_token(config.TWITTER_KEY, config.TWITTER_SECRET)
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-    for tid, actions in id_list:
-        if 'RL' in actions:
-            print "Retweet & Like:", tid
-            api.retweet(tid)
-            api.create_favorite(tid)
-        elif 'L' in actions:
-            print "Like:", tid
-            api.create_favorite(tid)
-        else:
-            print "Retweet:", tid
-            api.retweet(tid)
+    def interact(seq):
+        target_word = words[seq]
+        print "target:", target_word
+        for t in tweepy.Cursor(api.search, q=target_word, 
+                               include_entities=False, trim_user=True).items():
+            
+            for w in extract_words(t.text):
+                if w not in words:
+                    # print "not in list:", w
+                    continue
+                if w!=words[seq]:
+                    # print "wrong tweet:", w
+                    break
+
+                try:
+                    if 'RL' in actions:
+                        print "Retweet & Like:", t.id
+                        api.retweet(t.id)
+                        api.create_favorite(t.id)
+                    else:
+                        print "Retweet:", t.id
+                        api.retweet(t.id)
+                    return
+                except Exception,e:
+                    print "already retweeted:", t.id
+                    print str(e)
+                    continue
+
+    for seq, actions in seq_list:
+        interact(seq)
+
 
 def read_message(screen_name, words):
 
@@ -122,8 +128,10 @@ def read_message(screen_name, words):
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
     interactions = []
-    tweets = api.user_timeline(screen_name, count=10)
-    for t in reversed(tweets):
+    retweets = api.user_timeline(screen_name, count=10)
+    favorites = api.favorites(screen_name, count=10)
+
+    for t in reversed(retweets+favorites):
         seq = -1
         for w in extract_words(t.text):
             if w in words:
@@ -133,9 +141,7 @@ def read_message(screen_name, words):
                     pass
                 break
 
-        if t.favorited and not t.retweeted:
-            action = "L"
-        elif t.retweeted and not t.favorited:
+        if t.retweeted and not t.favorited:
             action = "R"
         else:
             action = "RL"   

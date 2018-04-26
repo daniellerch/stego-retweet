@@ -22,8 +22,7 @@ def main():
     words = load_words("db/words.txt")
     if sys.argv[1] == 'send':
         seq_list = hide(sys.argv[2].lower())
-        id_list = find_tweets(seq_list, words)
-        send_message(id_list)
+        send_message(seq_list, words)
 
     elif sys.argv[1] == 'recv':
         seq_list = read_message(sys.argv[2], words)
