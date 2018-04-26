@@ -7,28 +7,27 @@ import time
 import datetime
 import numpy as np
 from srt import config
-from srt.twitter import load_data, hide, unhide, send_message, read_message
+from srt.twitter import load_words, find_tweets, hide, unhide, send_message, read_message
 
 
 def main():
 
-    if len(sys.argv) != 4:
+    if len(sys.argv) != 3:
         print "Usage: "
-        print "   %s <db> <send> <text>" % (sys.argv[0])
-        print "   %s <db> <recv> <user>" % (sys.argv[0])
+        print "   %s <send> <text>" % (sys.argv[0])
+        print "   %s <recv> <user>" % (sys.argv[0])
         print 
         sys.exit(0)
 
-    data = load_data(sys.argv[1])
-    data_r = {v: k for k, v in data.items()}
+    words = load_words("db/words.txt")
+    if sys.argv[1] == 'send':
+        seq_list = hide(sys.argv[2].lower())
+        id_list = find_tweets(seq_list, words)
+        send_message(id_list)
 
-    if sys.argv[2] == 'send':
-        id_string = hide(sys.argv[3], data)
-        send_message(id_string)
-
-    elif sys.argv[2] == 'recv':
-        seq_string = read_message(sys.argv[3])
-        print unhide(seq_string)
+    elif sys.argv[1] == 'recv':
+        seq_list = read_message(sys.argv[2], words)
+        print unhide(seq_list)
 
 if __name__ == "__main__":
     main()
