@@ -32,28 +32,6 @@ def load_words(path):
         return w
     return []
 
-def find_tweet(seq, words):
-    logging.basicConfig()
-    auth = tweepy.OAuthHandler(config.TWITTER_CONSUMER_KEY, config.TWITTER_CONSUMER_SECRET)
-    auth.set_access_token(config.TWITTER_KEY, config.TWITTER_SECRET)
-    api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
-    
-    for t in tweepy.Cursor(api.search, q=words[seq], 
-                           include_entities=False, trim_user=True).items():
-        
-        for w in extract_words(t.text):
-            if w not in words:
-                # print "not in list:", w
-                continue
-            if w!=words[seq]:
-                # print "wrong tweet:", w
-                break
-            return t.id
-
-    print "tweet not found:", 
-    sys.exit(0)
-
-
 
 def hide(path):
     tw = textwrap.wrap(path, config.CHARS_X_INTERACTION, \
@@ -84,15 +62,17 @@ def unhide(seq_list):
     return message
 
 
-def send_message(seq_list, words):
+def send_message(seq_list, words, hashtag_list):
+    logging.basicConfig()
     auth = tweepy.OAuthHandler(config.TWITTER_CONSUMER_KEY, config.TWITTER_CONSUMER_SECRET)
     auth.set_access_token(config.TWITTER_KEY, config.TWITTER_SECRET)
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-    def interact(seq):
-        target_word = words[seq]
-        print "target:", target_word
-        for t in tweepy.Cursor(api.search, q=target_word, 
+    def interact(seq, hashtag):
+        target = words[seq]
+        if len(hashtag)>0:
+            target += ' #'+hashtag
+        for t in tweepy.Cursor(api.search, q=target, 
                                include_entities=False, trim_user=True).items():
             
             for w in extract_words(t.text):
@@ -105,20 +85,25 @@ def send_message(seq_list, words):
 
                 try:
                     if 'RL' in actions:
-                        print "Retweet & Like:", t.id
                         api.retweet(t.id)
                         api.create_favorite(t.id)
+                        print "Retweet & Like:", t.id, ", search:", target
                     else:
-                        print "Retweet:", t.id
                         api.retweet(t.id)
-                    return
+                        print "Retweet:", t.id, ", search:", target
+                    return True
                 except Exception,e:
-                    print "already retweeted:", t.id
-                    print str(e)
+                    #print "already retweeted:", t.id
+                    #print str(e)
                     continue
+        return False
 
     for seq, actions in seq_list:
-        interact(seq)
+        print seq
+        for hashtag in hashtag_list:
+            print "using hashtag:", hashtag
+            if interact(seq, hashtag):
+                break
 
 
 def read_message(screen_name, words):

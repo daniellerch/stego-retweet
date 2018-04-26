@@ -7,7 +7,7 @@ import time
 import datetime
 import numpy as np
 from srt import config
-from srt.twitter import load_words, find_tweets, hide, unhide, send_message, read_message
+from srt.twitter import load_words, hide, unhide, send_message, read_message
 
 
 def main():
@@ -21,8 +21,10 @@ def main():
 
     words = load_words("db/words.txt")
     if sys.argv[1] == 'send':
+        hashtag_list = ["crypto", "bitcoin"]
+        hashtag_list += [""]
         seq_list = hide(sys.argv[2].lower())
-        send_message(seq_list, words)
+        send_message(seq_list, words, hashtag_list)
 
     elif sys.argv[1] == 'recv':
         seq_list = read_message(sys.argv[2], words)
