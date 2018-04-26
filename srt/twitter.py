@@ -99,7 +99,6 @@ def send_message(seq_list, words, hashtag_list):
         return False
 
     for seq, actions in seq_list:
-        print seq
         for hashtag in hashtag_list:
             #print "using hashtag:", hashtag
             if interact(seq, hashtag):
