@@ -58,12 +58,12 @@ Example:
 ```bash
 $ python stegoretweet.py send "hello world!"
 Password:
-Retweet: 989844229433233409 , search: wish
-Retweet & Like: 989844194750590978 , search: rose
-Retweet: 989844176161443841 , search: dick
-Retweet: 989844197430751232 , search: neil
-Retweet & Like: 989844221032108033 , search: anne
-Retweet: 989844244889329664 , search: note
+Retweet: 989930938296619008 , search: ignored
+Retweet: 989931396696289280 , search: contamination
+Retweet: 989930832365346816 , search: varied
+Retweet: 989930844587479043 , search: replication
+Retweet: 989931572815155200 , search: jobs
+Retweet: 989931584651517953 , search: tokyo      
 ```
 
 Using the above command yout are going to retweet whatever tweet that serves to hide the message. To have a little control you can provide a list of hashtags. Stego-retweet will hide information in tweets that contain these hashtags if they are found. Otherwise, stego-retweet will use any other tweet.
@@ -73,12 +73,12 @@ Example:
 ```bash
 python stegoretweet.py send "hello world!" "crypto,bitcoin,infosec"
 Password:
-Retweet: 989760775630696449 , search: wish #crypto
-Retweet & Like: 988804388599853056 , search: rose #crypto
-Retweet: 989712534801350656 , search: dick #crypto
-Retweet: 989294208933613568 , search: neil #bitcoin
-Retweet & Like: 989507862383734784 , search: anne #bitcoin
-Retweet: 989462671291572224 , search: note #crypto
+Retweet: 989922919383011328 , search: attended #crypto
+Retweet: 988077479037427713 , search: conservation #bitcoin
+Retweet: 989915705439961088 , search: particularly #crypto
+Retweet: 989930267304517633 , search: headquarters
+Retweet: 989119168611082241 , search: fears #crypto
+Retweet: 989519586155487233 , search: complicated #bitcoin 
 ```
 
 

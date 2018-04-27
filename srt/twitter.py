@@ -40,24 +40,17 @@ def hide(path):
     for mm in tw:
         base, offset = str_to_code(mm)
         #print "hide:", base, offset
-        if offset==0:
-            interactions.append((base, 'R'))
-        else:
-            interactions.append((base, 'RL'))
+        interactions.append((base, 'R'))
 
     return interactions
 
 
 def unhide(seq_list):
     message=''
-    for base, actions in seq_list:
+    for base in seq_list:
         if base == -1:
             continue
         offset = 0
-        if 'RL' in actions:
-            offset = 1
-
-        #print "unhide:", base, offset
         message += code_to_str(base, offset)
     return message
 
@@ -84,13 +77,8 @@ def send_message(seq_list, words, hashtag_list):
                     break
 
                 try:
-                    if 'RL' in actions:
-                        api.retweet(t.id)
-                        api.create_favorite(t.id)
-                        print "Retweet & Like:", t.id, ", search:", target
-                    else:
-                        api.retweet(t.id)
-                        print "Retweet:", t.id, ", search:", target
+                    api.retweet(t.id)
+                    print "Retweet:", t.id, ", search:", target
                     return True
                 except Exception,e:
                     #print "already retweeted:", t.id
@@ -112,7 +100,7 @@ def read_message(screen_name, words):
     api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
     interactions = []
-    retweets = api.user_timeline(screen_name, count=20)
+    retweets = api.user_timeline(screen_name, count=10)
 
     for t in reversed(retweets):
         seq = -1
@@ -124,11 +112,7 @@ def read_message(screen_name, words):
                     pass
                 break
 
-        if t.retweeted and not t.favorited:
-            action = "R"
-        else:
-            action = "RL"   
-        interactions.append((seq, action))
+        interactions.append(seq)
 
     return interactions
 
