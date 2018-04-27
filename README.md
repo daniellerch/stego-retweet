@@ -57,6 +57,7 @@ To hide a message you have to execute "stegoretweet.py" with the "send" option a
 Example:
 ```bash
 $ python stegoretweet.py send "hello world!"
+Password:
 Retweet: 989844229433233409 , search: wish
 Retweet & Like: 989844194750590978 , search: rose
 Retweet: 989844176161443841 , search: dick
@@ -70,13 +71,14 @@ Using the above command yout are going to retweet whatever tweet that serves to 
 
 Example:
 ```bash
- python stegoretweet.py send "hello world!" "crypto,bitcoin,infosec"
- Retweet: 989760775630696449 , search: wish #crypto
- Retweet & Like: 988804388599853056 , search: rose #crypto
- Retweet: 989712534801350656 , search: dick #crypto
- Retweet: 989294208933613568 , search: neil #bitcoin
- Retweet & Like: 989507862383734784 , search: anne #bitcoin
- Retweet: 989462671291572224 , search: note #crypto
+python stegoretweet.py send "hello world!" "crypto,bitcoin,infosec"
+Password:
+Retweet: 989760775630696449 , search: wish #crypto
+Retweet & Like: 988804388599853056 , search: rose #crypto
+Retweet: 989712534801350656 , search: dick #crypto
+Retweet: 989294208933613568 , search: neil #bitcoin
+Retweet & Like: 989507862383734784 , search: anne #bitcoin
+Retweet: 989462671291572224 , search: note #crypto
 ```
 
 
@@ -86,6 +88,7 @@ To read a message you have to use the option "recv" and the name of the twitter 
 Example:
 ```bash
 $ python stegoretweet.py recv UserAccount
+Password:
 r7@8b(hd(,dhello world!
 ```
 

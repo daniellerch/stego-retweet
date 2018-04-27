@@ -4,6 +4,9 @@ import sys
 import md5
 import json
 import time
+import random
+import hashlib
+import getpass
 import datetime
 import numpy as np
 from srt import config
@@ -21,6 +24,12 @@ def main():
         sys.exit(0)
 
     words = load_words("db/words.txt")
+    pw = getpass.getpass()
+    hx = hashlib.sha256(pw).hexdigest()
+    s = int(hx, 16)
+    random.seed(s)
+    random.shuffle(words)
+
     if sys.argv[1] == 'send':
         hashtag_list = []
         if len(sys.argv)==4:
