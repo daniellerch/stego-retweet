@@ -1,6 +1,6 @@
 # stego-retweet
 
-Stego-retweet is a tool for hiding messages in Twitter using retweets and likes. With this tool you can hide two chars per retweet.
+Stego-retweet is a tool for hiding messages in Twitter using retweets. With this tool you can hide two chars per retweet.
 
 
 - [Install](#install)
