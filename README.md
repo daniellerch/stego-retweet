@@ -83,7 +83,7 @@ Retweet: 989462671291572224 , search: note #crypto
 
 
 ### Unhide a message
-To read a message you have to use the option "recv" and the name of the twitter account of the sender.
+To read a message you have to use the option "recv" and the name of the twitter account of the sender. You need to provide the same password used to send the message.
 
 Example:
 ```bash
