@@ -3,10 +3,11 @@
 Stego-retweet is a tool for hiding messages in Twitter using retweets. With this tool you can hide two chars per retweet.
 
 
-- [Install](#install)
-- [Configuration](#configuration)
-- [Hide a message](#hide-a-message)
-- [Unhide a message](#unhide-a-message)
+- [stego-retweet](#stego-retweet)
+    - [Install](#install)
+    - [Configuration](#configuration)
+    - [Hide a message](#hide-a-message)
+    - [Unhide a message](#unhide-a-message)
 
 
 ### Install
@@ -14,19 +15,19 @@ Stego-retweet is a tool for hiding messages in Twitter using retweets. With this
 First you need to clone the GIT repository:
 
 ```bash
-$ git clone https://github.com/daniellerch/stego-retweet.git
+~$ git clone https://github.com/daniellerch/stego-retweet.git
 ```
 
 Inside the stego-retweet directory you will find a requirements file for installing Python dependencies with pip:
 
 ```bash
-$ sudo pip install -r requirements.txt 
+~$ pip3 install -r requirements.txt
 ```
 
 After that, you can execute stego-retweet with:
 
 ```bash
-$ python stegoretweet.py
+~$ python3 stegoretweet.py
 Usage:
     stegoretweet.py <send> <text>
     stegoretweet.py <send> <text> <hashtag1,hahstag2,hashtagN>
@@ -43,10 +44,10 @@ When you create an application you obtain some access tokens you have to
 configure in the srt/config.py "file".
 
 ```bash
-TWITTER_CONSUMER_KEY = "XXX"
-TWITTER_CONSUMER_SECRET = "XXX"
-TWITTER_KEY = "XXX"
-TWITTER_SECRET = "XXX"
+TWITTER_CONSUMER_KEY = 'XXX'
+TWITTER_CONSUMER_SECRET = 'XXX'
+TWITTER_KEY = 'XXX'
+TWITTER_SECRET = 'XXX'
 ```
 
 
@@ -56,14 +57,14 @@ To hide a message you have to execute "stegoretweet.py" with the "send" option a
 
 Example:
 ```bash
-$ python stegoretweet.py send "hello world!"
+~$ python3 stegoretweet.py send "hello world!"
 Password:
 Retweet: 989930938296619008 , search: ignored
 Retweet: 989931396696289280 , search: contamination
 Retweet: 989930832365346816 , search: varied
 Retweet: 989930844587479043 , search: replication
 Retweet: 989931572815155200 , search: jobs
-Retweet: 989931584651517953 , search: tokyo      
+Retweet: 989931584651517953 , search: tokyo
 ```
 
 Using the above command yout are going to retweet whatever tweet that serves to hide the message. To have a little control you can provide a list of hashtags. Stego-retweet will hide information in tweets that contain these hashtags if they are found. Otherwise, stego-retweet will use any other tweet.
@@ -71,14 +72,14 @@ Using the above command yout are going to retweet whatever tweet that serves to 
 
 Example:
 ```bash
-python stegoretweet.py send "hello world!" "crypto,bitcoin,infosec"
+~$ python3 stegoretweet.py send "hello world!" "crypto,bitcoin,infosec"
 Password:
 Retweet: 989922919383011328 , search: attended #crypto
 Retweet: 988077479037427713 , search: conservation #bitcoin
 Retweet: 989915705439961088 , search: particularly #crypto
 Retweet: 989930267304517633 , search: headquarters
 Retweet: 989119168611082241 , search: fears #crypto
-Retweet: 989519586155487233 , search: complicated #bitcoin 
+Retweet: 989519586155487233 , search: complicated #bitcoin
 ```
 
 
@@ -87,16 +88,9 @@ To read a message you have to use the option "recv" and the name of the twitter 
 
 Example:
 ```bash
-$ python stegoretweet.py recv UserAccount
+~$ python3 stegoretweet.py recv UserAccount
 Password:
 r7@8b(hd(,dhello world!
 ```
 
 You can see some garbage in the results. This is due to retweets that does not contains any hidden information.
-
-
-
-
-
-
-
