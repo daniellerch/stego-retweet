@@ -1,3 +1,8 @@
+import os
+
+TRACE_LEVEL = os.getenv('TRACE_LEVEL', 'INFO')
+LOG_PATH = os.getenv('LOG_PATH', 'log')
+
 CHARSET = "abcdefghijklmnopqrstuvwxyz0123456789 '.,:?!/-+=<>$_*()@#|%&[]{}^"
 BITS_X_CHAR = 6
 CHARS_X_INTERACTION = 2
@@ -7,5 +12,5 @@ NUM_MESSAGES = (len(CHARSET) ** CHARS_X_INTERACTION) / \
 
 TWITTER_CONSUMER_KEY = 'XXX'
 TWITTER_CONSUMER_SECRET = 'XXX'
-TWITTER_KEY = 'XXX'
-TWITTER_SECRET = 'XXX'
+TWITTER_TOKEN = 'XXX'
+TWITTER_TOKEN_SECRET = 'XXX'

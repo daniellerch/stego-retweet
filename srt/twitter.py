@@ -1,14 +1,25 @@
+import logging
 import textwrap
 import tweepy
 from srt import config
 from srt.encoding import str_to_code, code_to_str
 
+log = logging.getLogger(__name__)
+
 
 def extract_words(text):
+    """ Returns a list with all processed words in a text.
+
+    Attributes:
+        :text (str): Text to process all words.
+    """
+
+    log.debug('Extracting words from text.')
     text = text.lower()
     text = text.replace('#', '')
     words = text.split()
     result = []
+
     for w in words:
         if len(w) < 4:
             continue
@@ -17,27 +28,46 @@ def extract_words(text):
         if '/' in w:
             continue
         result.append(w)
+
     return result
 
 
 def load_words(path):
+    """ Returns a list with all words in file splitted by line.
+
+    Attributes:
+        :path (str):    Path to file with words to load.
+    """
+
+    log.debug(f'Loading words from file "{path}".')
+
     with open(path, 'r') as f:
         w = f.read().splitlines()
         return w
     return []
 
 
-def hide(path):
+def hide(msg):
+    """ Returns a list of tuples (base, R) for each msg chunk.
+
+    Attributes:
+        :msg (str): Message to hide.
+    """
+
+    log.debug(f'Hidding message "{msg}".')
     tw = textwrap.wrap(
-        path,
+        msg,
         config.CHARS_X_INTERACTION,
         drop_whitespace=False
     )
+
     interactions = []
-    for mm in tw:
-        base, offset = str_to_code(mm)
-        # print('hide: {base} {offset}')
+    for chunk in tw:
+        base, offset = str_to_code(chunk)
+        log.debug(f'hide: [chunk: {chunk}, base: {base}, offset: {offset}]')
         interactions.append((base, 'R'))
+
+    log.debug(f'interactions: {interactions}')
 
     return interactions
 
@@ -52,20 +82,33 @@ def unhide(seq_list):
     return message
 
 
-def send_message(seq_list, words, hashtag_list):
+def get_api():
+    """ Returns Twitter API object. """
+
     auth = tweepy.OAuthHandler(
         config.TWITTER_CONSUMER_KEY,
         config.TWITTER_CONSUMER_SECRET
     )
     auth.set_access_token(
-        config.TWITTER_KEY,
-        config.TWITTER_SECRET
+        config.TWITTER_TOKEN,
+        config.TWITTER_TOKEN_SECRET
     )
-    api = tweepy.API(
+    return tweepy.API(
         auth,
         wait_on_rate_limit=True,
         wait_on_rate_limit_notify=True
     )
+
+
+def send_message(seq_list, words, hashtag_list):
+    """
+    Attributes:
+        :seq_list (lst):        List of tuples os sequence and actions.
+        :words (lst):           List of words.
+        :hashtag_list (lst):    List of hashtag given.
+    """
+
+    api = get_api()
 
     def interact(seq, hashtag):
         target = words[seq]
@@ -80,10 +123,10 @@ def send_message(seq_list, words, hashtag_list):
 
             for w in extract_words(t.text):
                 if w not in words:
-                    # print('not in list: {w}')
+                    log.debug('Not in list: {w}')
                     continue
                 if w != words[seq]:
-                    # print('wrong tweet: {w}')
+                    log.debug('Wrong tweet: {w}')
                     break
 
                 try:
@@ -91,31 +134,20 @@ def send_message(seq_list, words, hashtag_list):
                     print(f'Retweet: {t.id}, search: {target}')
                     return True
                 except Exception as e:
-                    # print('already retweeted: {t.id}')
-                    print(e)
+                    log.debug('Already retweeted: {t.id}')
+                    log.error(e)
                     continue
         return False
 
     for seq, actions in seq_list:
         for hashtag in hashtag_list:
-            # print(f'using hashtag: {hashtag}')
-            if interact(seq, hashtag):
+            log.debug(f'hashtag: {hashtag}, seq: {seq}, actions: {actions}')
+            if interact(int(seq), hashtag):
                 break
 
 
 def read_message(screen_name, words):
-    auth = tweepy.OAuthHandler(
-        config.TWITTER_CONSUMER_KEY,
-        config.TWITTER_CONSUMER_SECRET
-    )
-    auth.set_access_token(
-        config.TWITTER_KEY,
-        config.TWITTER_SECRET
-    )
-    api = tweepy.API(
-        auth, wait_on_rate_limit=True,
-        wait_on_rate_limit_notify=True
-    )
+    api = get_api()
 
     interactions = []
     retweets = api.user_timeline(screen_name, count=10)

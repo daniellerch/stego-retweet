@@ -4,13 +4,13 @@ Stego-retweet is a tool for hiding messages in Twitter using retweets. With this
 
 
 - [stego-retweet](#stego-retweet)
-    - [Install](#install)
-    - [Configuration](#configuration)
-    - [Hide a message](#hide-a-message)
-    - [Unhide a message](#unhide-a-message)
+  - [Install](#install)
+  - [Configuration](#configuration)
+  - [Hide a message](#hide-a-message)
+  - [Unhide a message](#unhide-a-message)
 
 
-### Install
+## Install
 
 First you need to clone the GIT repository:
 
@@ -35,7 +35,7 @@ Usage:
 ```
 
 
-### Configuration
+## Configuration
 
 To use stego-retweet you need a twitter account with an associated application.
 Please, go to https://apps.twitter.com/.
@@ -50,8 +50,20 @@ TWITTER_KEY = 'XXX'
 TWITTER_SECRET = 'XXX'
 ```
 
+You can also set some environment variables for the trace level or to select the directory where you want the log to be written.
 
-### Hide a message
+- The trace level is set by default to `INFO`. You can select another level of detail by executing the following command:
+
+    ```bash
+    export TRACE_LEVEL="DEBUG"
+    ```
+- The directory where the logs were written has a default value of `log`. You can change it by running the following command:
+
+    ```bash
+    export LOG_PATH="/home/user/log"
+    ```
+
+## Hide a message
 
 To hide a message you have to execute "stegoretweet.py" with the "send" option and the message you want to hide.
 
@@ -83,7 +95,7 @@ Retweet: 989519586155487233 , search: complicated #bitcoin
 ```
 
 
-### Unhide a message
+## Unhide a message
 To read a message you have to use the option "recv" and the name of the twitter account of the sender. You need to provide the same password used to send the message.
 
 Example:

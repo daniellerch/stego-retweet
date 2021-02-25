@@ -12,6 +12,11 @@ auth = tweepy.OAuthHandler(
     config.TWITTER_CONSUMER_KEY,
     config.TWITTER_CONSUMER_SECRET
 )
-auth.set_access_token(config.TWITTER_KEY, config.TWITTER_SECRET)
+auth.set_access_token(
+    config.TWITTER_TOKEN,
+    config.TWITTER_TOKEN_SECRET
+)
+
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
+
 print(json.dumps(api.get_status(tid)._json, indent=2))
