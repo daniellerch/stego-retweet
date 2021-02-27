@@ -51,6 +51,10 @@ flycheck_*.el
 
 
 ### Python ###
+
+# Logs
+log/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

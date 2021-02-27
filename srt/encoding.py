@@ -19,7 +19,7 @@ def str_to_code(s):
     base = code / config.AVAILABLE_INTERACTIONS
     offset = code - (base * config.AVAILABLE_INTERACTIONS)
 
-    return base, offset
+    return int(base), int(offset)
 
 
 def code_to_str(base, offset):

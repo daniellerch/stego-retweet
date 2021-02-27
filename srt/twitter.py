@@ -7,27 +7,21 @@ from srt.encoding import str_to_code, code_to_str
 log = logging.getLogger(__name__)
 
 
-def extract_words(text):
-    """ Returns a list with all processed words in a text.
+def extract_words(tweet):
+    """ Returns a list with all processed words in a tweet.
 
     Attributes:
-        :text (str): Text to process all words.
+        :tweet (str): Tweet text to process all words.
     """
 
-    log.debug('Extracting words from text.')
-    text = text.lower()
-    text = text.replace('#', '')
-    words = text.split()
+    log.debug('Extracting words from tweet.')
+    words = tweet.replace('#', '').lower().split()
     result = []
 
-    for w in words:
-        if len(w) < 4:
+    for word in words:
+        if len(word) < 4 or '@' in word or '/' in word:
             continue
-        if '@' in w:
-            continue
-        if '/' in w:
-            continue
-        result.append(w)
+        result.append(word)
 
     return result
 
@@ -101,7 +95,8 @@ def get_api():
 
 
 def send_message(seq_list, words, hashtag_list):
-    """
+    """ Try to retweet those tweets that have a series of characteristics.
+
     Attributes:
         :seq_list (lst):        List of tuples os sequence and actions.
         :words (lst):           List of words.
@@ -111,38 +106,91 @@ def send_message(seq_list, words, hashtag_list):
     api = get_api()
 
     def interact(seq, hashtag):
+        """ This function looking  for tweets  that contain  a specific target.
+        Then, for every tweet found, it lists all its words and searches one by
+        one if they are in the word list.  If it is in the list, if the word is
+        the same as the target. If the word is not equal to the target, discard
+        the tweet and search the next one. If on the contrary the word is equal
+        to the target, proceed  to retweet.  Finally, if retweet  returns True,
+        else returns False.
+
+        Attributes:
+            :seq (int):     Index to search word in list of words.
+            :hashtag (str): Hashtag to include in tagert if is not empty.
+        """
+
         target = words[seq]
+
         if len(hashtag) > 0:
-            target += ' #'+hashtag
-        for t in tweepy.Cursor(
+            target += ' #' + hashtag
+
+        log.debug(f'Looking for tweets that contain target "{target}".')
+        input()
+
+        for tweet in tweepy.Cursor(
             api.search,
             q=target,
             include_entities=False,
             trim_user=True
         ).items():
 
-            for w in extract_words(t.text):
-                if w not in words:
-                    log.debug('Not in list: {w}')
+            log.debug(
+                f'Tweet with id "{tweet.id}" founded with target "{target}"!'
+            )
+            input()
+
+            for word in extract_words(tweet.text):
+                log.debug(f'Check if word "{word}" is in list of words.')
+                input()
+                if word not in words:
+                    log.debug(
+                        f'Word "{word}" not in list of words, check next.'
+                    )
+                    input()
                     continue
-                if w != words[seq]:
-                    log.debug('Wrong tweet: {w}')
+
+                log.debug(f'Yeah! Word "{word}" in list of words!')
+                input()
+                log.debug(f'Check if word "{word}" is equal than target.')
+                input()
+                if word != target:
+                    log.debug(
+                        f'Oh fuck! Word "{word}" is not equal than target \
+"{target}". Trying with another tweet.'
+                    )
+                    input()
                     break
 
+                log.debug(
+                    f'Yeah! Word "{word}" is equal than taget "{target}".'
+                )
+                log.debug('Trying to retweet.')
+                input()
                 try:
-                    api.retweet(t.id)
-                    print(f'Retweet: {t.id}, search: {target}')
+                    api.retweet(tweet.id)
+                    out = f'Tweet with id "{tweet.id}" successfully retweeted!'
+                    log.debug(out)
+                    print(out)
+                    input()
                     return True
                 except Exception as e:
-                    log.debug('Already retweeted: {t.id}')
+                    log.debug(f'Tweet with id "{tweet.id}" already retweeted.')
                     log.error(e)
                     continue
+
+        log.debug(
+            f'Tweet with target "{target}" not found, check next hashtag.'
+        )
+        input()
         return False
 
     for seq, actions in seq_list:
         for hashtag in hashtag_list:
-            log.debug(f'hashtag: {hashtag}, seq: {seq}, actions: {actions}')
-            if interact(int(seq), hashtag):
+            log.debug(
+                f'hashtag: "{hashtag}", seq: "{seq}", actions: "{actions}"'
+            )
+            input()
+            if interact(seq, hashtag):
                 break
 
 
