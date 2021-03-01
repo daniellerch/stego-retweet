@@ -125,7 +125,7 @@ def send_message(seq_list, words, hashtag_list):
             target += ' #' + hashtag
 
         log.debug(f'Looking for tweets that contain target "{target}".')
-        input()
+        # input()
 
         for tweet in tweepy.Cursor(
             api.search,
@@ -137,41 +137,42 @@ def send_message(seq_list, words, hashtag_list):
             log.debug(
                 f'Tweet with id "{tweet.id}" founded with target "{target}"!'
             )
-            input()
+            # input()
 
             for word in extract_words(tweet.text):
                 log.debug(f'Check if word "{word}" is in list of words.')
-                input()
+                # input()
                 if word not in words:
                     log.debug(
                         f'Word "{word}" not in list of words, check next.'
                     )
-                    input()
+                    # input()
                     continue
 
                 log.debug(f'Yeah! Word "{word}" in list of words!')
-                input()
+                # input()
                 log.debug(f'Check if word "{word}" is equal than target.')
-                input()
+                # input()
                 if word != target:
                     log.debug(
                         f'Oh fuck! Word "{word}" is not equal than target \
 "{target}". Trying with another tweet.'
                     )
-                    input()
+                    # input()
                     break
 
                 log.debug(
                     f'Yeah! Word "{word}" is equal than taget "{target}".'
                 )
                 log.debug('Trying to retweet.')
-                input()
+                # input()
                 try:
                     api.retweet(tweet.id)
-                    out = f'Tweet with id "{tweet.id}" successfully retweeted!'
+                    out = f'Tweet with id "{tweet.id}" containing the target \
+"{target}" successfully retweeted!'
                     log.debug(out)
                     print(out)
-                    input()
+                    # input()
                     return True
                 except Exception as e:
                     log.debug(f'Tweet with id "{tweet.id}" already retweeted.')
@@ -181,7 +182,7 @@ def send_message(seq_list, words, hashtag_list):
         log.debug(
             f'Tweet with target "{target}" not found, check next hashtag.'
         )
-        input()
+        # input()
         return False
 
     for seq, actions in seq_list:
@@ -189,7 +190,7 @@ def send_message(seq_list, words, hashtag_list):
             log.debug(
                 f'hashtag: "{hashtag}", seq: "{seq}", actions: "{actions}"'
             )
-            input()
+            # input()
             if interact(seq, hashtag):
                 break
 

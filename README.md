@@ -68,15 +68,16 @@ You can also set some environment variables for the trace level or to select the
 To hide a message you have to execute "stegoretweet.py" with the "send" option and the message you want to hide.
 
 Example:
+
 ```bash
 ~$ python3 stegoretweet.py send "hello world!"
 Password:
-Retweet: 989930938296619008 , search: ignored
-Retweet: 989931396696289280 , search: contamination
-Retweet: 989930832365346816 , search: varied
-Retweet: 989930844587479043 , search: replication
-Retweet: 989931572815155200 , search: jobs
-Retweet: 989931584651517953 , search: tokyo
+Tweet with id "1366464152739450883" containing the target "famous" successfully retweeted!
+Tweet with id "1366464284268449793" containing the target "singapore" successfully retweeted!
+Tweet with id "1366464261376122883" containing the target "lion" successfully retweeted!
+Tweet with id "1366464276869902336" containing the target "experiences" successfully retweeted!
+Tweet with id "1366449721003413521" containing the target "televisions" successfully retweeted!
+Tweet with id "1366464269684862979" containing the target "bouquet" successfully retweeted!
 ```
 
 Using the above command yout are going to retweet whatever tweet that serves to hide the message. To have a little control you can provide a list of hashtags. Stego-retweet will hide information in tweets that contain these hashtags if they are found. Otherwise, stego-retweet will use any other tweet.
@@ -86,14 +87,13 @@ Example:
 ```bash
 ~$ python3 stegoretweet.py send "hello world!" "crypto,bitcoin,infosec"
 Password:
-Retweet: 989922919383011328 , search: attended #crypto
-Retweet: 988077479037427713 , search: conservation #bitcoin
-Retweet: 989915705439961088 , search: particularly #crypto
-Retweet: 989930267304517633 , search: headquarters
-Retweet: 989119168611082241 , search: fears #crypto
-Retweet: 989519586155487233 , search: complicated #bitcoin
+Tweet with id "989922919383011328" containing the target "attended #crypto" successfully retweeted!
+Tweet with id "988077479037427713" containing the target "conservation #bitcoin" successfully retweeted!
+Tweet with id "989915705439961088" containing the target "particularly #crypto" successfully retweeted!
+Tweet with id "989930267304517633" containing the target "headquarters" successfully retweeted!
+Tweet with id "989119168611082241" containing the target "fears #crypto" successfully retweeted!
+Tweet with id "989519586155487233" containing the target "complicated #bitcoin" successfully retweeted!
 ```
-
 
 ## Unhide a message
 To read a message you have to use the option "recv" and the name of the twitter account of the sender. You need to provide the same password used to send the message.
