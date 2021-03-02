@@ -96,7 +96,8 @@ Tweet with id "989519586155487233" containing the target "complicated #bitcoin" 
 ```
 
 ## Unhide a message
-To read a message you have to use the option "recv" and the name of the twitter account of the sender. You need to provide the same password used to send the message.
+
+To read a message you have to use the option "recv" and the name of the twitter account of the sender (without @). You need to provide the same password used to send the message.
 
 Example:
 ```bash

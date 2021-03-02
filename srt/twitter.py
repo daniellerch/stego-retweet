@@ -196,21 +196,43 @@ def send_message(seq_list, words, hashtag_list):
 
 
 def read_message(screen_name, words):
-    api = get_api()
+    """ This function searches  the last 10 retweets for  a specific user. Then
+    for each  retweet found, it lists all of your words and searches one by one
+    if they are in the  word list. If it's in the  list, it stores the index of
+    the word in a list. Finally, it returns the list of indexes.
 
+    Attributes:
+        :screen_name (str): The name of the twitter  account of the sender,
+                            without @.
+        :words (lst):       List of words.
+    """
+
+    api = get_api()
     interactions = []
+
+    log.debug(f'Looking for retweets in "{screen_name}" user timeline.')
     retweets = api.user_timeline(screen_name, count=10)
 
-    for t in reversed(retweets):
+    for tweet in reversed(retweets):
         seq = -1
-        for w in extract_words(t.text):
-            if w in words:
+        for word in extract_words(tweet.text):
+            log.debug(f'Check if word "{word}" is in list of words.')
+            # input()
+            if word in words:
                 try:
-                    seq = words.index(w)
+                    seq = words.index(word)
                 except ValueError:
                     pass
-                break
 
+                log.debug(f'Yeah! Word "{word}" in list of words!')
+                # input()
+                break
+        log.debug(
+            f'Appending seq "{seq}" from word "{word}" to list of interactions'
+        )
+        # input()
         interactions.append(seq)
 
+    log.debug(f'interactions: {interactions}')
+    # input()
     return interactions
