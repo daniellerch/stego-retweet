@@ -42,7 +42,7 @@ def load_words(path):
 
 
 def hide(msg):
-    """ Returns a list of tuples (base, R) for each msg chunk.
+    """ Returns a list of integers, one for each msg chunk.
 
     Attributes:
         :msg (str): Message to hide.
@@ -59,7 +59,7 @@ def hide(msg):
     for chunk in tw:
         base, offset = str_to_code(chunk)
         log.debug(f'hide: [chunk: {chunk}, base: {base}, offset: {offset}]')
-        interactions.append((base, 'R'))
+        interactions.append(base)
 
     log.debug(f'interactions: {interactions}')
 
@@ -67,12 +67,19 @@ def hide(msg):
 
 
 def unhide(seq_list):
+    """ It receives a list of indexes and uses each of these indexes to build a
+    plain text message.
+
+    Attributes:
+        :seq_list (lst):    List of indexes.
+    """
+
     message = ''
     for base in seq_list:
         if base == -1:
             continue
-        offset = 0
-        message += code_to_str(base, offset)
+        message += code_to_str(base)
+
     return message
 
 
@@ -98,7 +105,7 @@ def send_message(seq_list, words, hashtag_list):
     """ Try to retweet those tweets that have a series of characteristics.
 
     Attributes:
-        :seq_list (lst):        List of tuples os sequence and actions.
+        :seq_list (lst):        List of integers.
         :words (lst):           List of words.
         :hashtag_list (lst):    List of hashtag given.
     """
@@ -125,7 +132,6 @@ def send_message(seq_list, words, hashtag_list):
             target += ' #' + hashtag
 
         log.debug(f'Looking for tweets that contain target "{target}".')
-        # input()
 
         for tweet in tweepy.Cursor(
             api.search,
@@ -137,42 +143,39 @@ def send_message(seq_list, words, hashtag_list):
             log.debug(
                 f'Tweet with id "{tweet.id}" founded with target "{target}"!'
             )
-            # input()
 
             for word in extract_words(tweet.text):
-                log.debug(f'Check if word "{word}" is in list of words.')
-                # input()
+                log.debug(f'Checking if word "{word}" is in list of words.')
+
                 if word not in words:
                     log.debug(
                         f'Word "{word}" not in list of words, check next.'
                     )
-                    # input()
                     continue
 
                 log.debug(f'Yeah! Word "{word}" in list of words!')
-                # input()
-                log.debug(f'Check if word "{word}" is equal than target.')
-                # input()
+                log.debug(f'Checking if word "{word}" is equal than target.')
+
                 if word != target:
                     log.debug(
-                        f'Oh fuck! Word "{word}" is not equal than target \
-"{target}". Trying with another tweet.'
+                        f'Word "{word}" is not equal than target "{target}". \
+Trying with another tweet.'
                     )
-                    # input()
+
                     break
 
                 log.debug(
                     f'Yeah! Word "{word}" is equal than taget "{target}".'
                 )
                 log.debug('Trying to retweet.')
-                # input()
+
                 try:
                     api.retweet(tweet.id)
                     out = f'Tweet with id "{tweet.id}" containing the target \
 "{target}" successfully retweeted!'
                     log.debug(out)
                     print(out)
-                    # input()
+
                     return True
                 except Exception as e:
                     log.debug(f'Tweet with id "{tweet.id}" already retweeted.')
@@ -180,44 +183,47 @@ def send_message(seq_list, words, hashtag_list):
                     continue
 
         log.debug(
-            f'Tweet with target "{target}" not found, check next hashtag.'
+            f'Tweet with target "{target}" not found, jump to next hashtag.'
         )
-        # input()
+
         return False
 
-    for seq, actions in seq_list:
+    for seq in seq_list:
         for hashtag in hashtag_list:
             log.debug(
-                f'hashtag: "{hashtag}", seq: "{seq}", actions: "{actions}"'
+                f'hashtag: "{hashtag}", seq: "{seq}"'
             )
-            # input()
+
             if interact(seq, hashtag):
                 break
 
 
-def read_message(screen_name, words):
+def read_message(sender_twitter_user, words, count):
     """ This function searches  the last 10 retweets for  a specific user. Then
     for each  retweet found, it lists all of your words and searches one by one
     if they are in the  word list. If it's in the  list, it stores the index of
     the word in a list. Finally, it returns the list of indexes.
 
     Attributes:
-        :screen_name (str): The name of the twitter  account of the sender,
-                            without @.
-        :words (lst):       List of words.
+        :sender_twitter_user (str): Sender twitter account name, without @.
+        :words (lst):               List of words.
+        :count (int):               Number of recent retweets  to search hidden
+                                    information.
     """
 
     api = get_api()
     interactions = []
 
-    log.debug(f'Looking for retweets in "{screen_name}" user timeline.')
-    retweets = api.user_timeline(screen_name, count=10)
+    log.debug(
+        f'Looking for retweets in "{sender_twitter_user}" user timeline.'
+    )
+    retweets = api.user_timeline(sender_twitter_user, count=count)
 
     for tweet in reversed(retweets):
         seq = -1
         for word in extract_words(tweet.text):
             log.debug(f'Check if word "{word}" is in list of words.')
-            # input()
+
             if word in words:
                 try:
                     seq = words.index(word)
@@ -225,14 +231,14 @@ def read_message(screen_name, words):
                     pass
 
                 log.debug(f'Yeah! Word "{word}" in list of words!')
-                # input()
+
                 break
         log.debug(
             f'Appending seq "{seq}" from word "{word}" to list of interactions'
         )
-        # input()
+
         interactions.append(seq)
 
     log.debug(f'interactions: {interactions}')
-    # input()
+
     return interactions

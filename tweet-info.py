@@ -17,6 +17,7 @@ auth.set_access_token(
     config.TWITTER_TOKEN_SECRET
 )
 
+# Rate limit: https://developer.twitter.com/en/docs/twitter-api/rate-limits
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 print(json.dumps(api.get_status(tid)._json, indent=2))

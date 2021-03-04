@@ -35,15 +35,18 @@ def main():
     random.shuffle(words)
 
     if sys.argv[1] == 'send':
+        msg = sys.argv[2]
         hashtag_list = []
         if len(sys.argv) == 4:
             hashtag_list = sys.argv[3].split(',')
         hashtag_list += ['']
-        seq_list = hide(sys.argv[2].lower())
+        seq_list = hide(msg.lower())
         send_message(seq_list, words, hashtag_list)
 
     elif sys.argv[1] == 'recv':
-        seq_list = read_message(sys.argv[2], words)
+        sender_twitter_user = sys.argv[2]
+        count = sys.argv[3]
+        seq_list = read_message(sender_twitter_user, words, count)
         print(unhide(seq_list))
 
 
