@@ -1,16 +1,78 @@
+import argparse
 import getpass
 import hashlib
 import logging
 import os
 import random
-import sys
 from srt import config
 from srt.twitter import load_words, hide, unhide, send_message, read_message
 
 log = logging.getLogger(__name__)
 
 
+def get_args():
+    parser = argparse.ArgumentParser(
+        description='Stego-retweet is a tool for hiding messages in Twitter \
+using retweets. With this tool you can hide two chars per retweet.'
+    )
+
+    parser.add_argument(
+        '-m',
+        '--mode',
+        help='Mode of execution, to send or recieve messages.',
+        choices=['send', 'recv']
+    )
+
+    parser.add_argument(
+        '-s',
+        '--secret',
+        help='Secret to hide.'
+    )
+
+    parser.add_argument(
+        '-ht',
+        '--hashtags',
+        help='List of hashtags.',
+        type=str
+    )
+
+    parser.add_argument(
+        '-a',
+        '--account',
+        help='Sender twitter account name, without @.',
+        type=str
+    )
+
+    parser.add_argument(
+        '-r',
+        '--retweets',
+        help='Number of recent retweets  to search hidden information.',
+        type=int
+    )
+
+    args = parser.parse_args()
+
+    if args.mode == 'send' and args.account:
+        parser.error('--account can only be set when --mode=recv.')
+    if args.mode == 'send' and args.retweets:
+        parser.error('--retweets can only be set when --mode=recv.')
+    if args.mode == 'send' and not args.secret:
+        parser.error('--secret it\'s mandatory when --mode=recv.')
+
+    if args.mode == 'recv' and args.secret:
+        parser.error('--secret can only be set when --mode=send.')
+    if args.mode == 'recv' and args.hashtags:
+        parser.error('--hashtags can only be set when --mode=send.')
+    if args.mode == 'recv' and not args.account:
+        parser.error('--account it\'s mandatory when --mode=recv.')
+    if args.mode == 'recv' and not args.retweets:
+        parser.error('--retweets it\'s mandatory when --mode=recv.')
+
+    return args
+
+
 def main():
+
     if not os.path.exists(config.LOG_PATH):
         os.makedirs(config.LOG_PATH)
 
@@ -20,13 +82,7 @@ def main():
         format='%(asctime)-15s  [%(levelname)s] %(message)s'
     )
 
-    if len(sys.argv) < 3:
-        print('Usage:')
-        print(f'\t{sys.argv[0]} <send> <text>')
-        print(f'\t{sys.argv[0]} <send> <text> <hashtag1,hahstag2,hashtagN>')
-        print(f'\t{sys.argv[0]} <recv> <user>')
-        sys.exit(1)
-
+    args = get_args()
     words = load_words('db/words.txt')
     password = getpass.getpass().encode('utf-8')
     password_hex = hashlib.sha256(password).hexdigest()
@@ -34,19 +90,17 @@ def main():
     random.seed(password_int)
     random.shuffle(words)
 
-    if sys.argv[1] == 'send':
-        msg = sys.argv[2]
+    if args.mode == 'send':
+        msg = args.secret
         hashtag_list = []
-        if len(sys.argv) == 4:
-            hashtag_list = sys.argv[3].split(',')
+        if args.hashtags:
+            hashtag_list = args.hashtags.split(',')
         hashtag_list += ['']
         seq_list = hide(msg.lower())
         send_message(seq_list, words, hashtag_list)
 
-    elif sys.argv[1] == 'recv':
-        sender_twitter_user = sys.argv[2]
-        count = sys.argv[3]
-        seq_list = read_message(sender_twitter_user, words, count)
+    if args.mode == 'recv':
+        seq_list = read_message(args.account, words, args.retweets)
         print(unhide(seq_list))
 
 
