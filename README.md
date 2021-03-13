@@ -63,6 +63,18 @@ You can also set some environment variables for the trace level or to select the
     export LOG_PATH="/home/user/log"
     ```
 
+- The maximum log file size is `5` Megabytes by default. If you want to change this value, you just have to run the following command specifying the new value in Megabytes:
+
+    ```bash
+    export LOG_MAX_MEGABYTES="7"
+    ```
+
+- Finally, the maximum number of rotated log files, by default `3`, but if you want to change this value you just have to execute the following command:
+
+    ```bash
+    export LOG_MAX_FILES="5"
+    ```
+
 ## Hide a message
 
 To hide a message you have to execute "stegoretweet.py" with the "send" option and the message you want to hide.

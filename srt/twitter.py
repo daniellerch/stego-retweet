@@ -74,6 +74,8 @@ def unhide(seq_list):
         :seq_list (lst):    List of indexes.
     """
 
+    log.info('Unhiding secret message.')
+
     message = ''
     for base in seq_list:
         if base == -1:
@@ -173,7 +175,7 @@ Trying with another tweet.'
                     api.retweet(tweet.id)
                     out = f'Tweet with id "{tweet.id}" containing the target \
 "{target}" successfully retweeted!'
-                    log.debug(out)
+                    log.info(out)
                     print(out)
 
                     return True
