@@ -1,34 +1,12 @@
 import argparse
 import getpass
 import hashlib
-import logging
-import os
 import random
 
-from logging.handlers import RotatingFileHandler
-from srt import config
+from srt import app_logger
 from srt.twitter import load_words, hide, unhide, send_message, read_message
 
-log = logging.getLogger(__name__)
-
-
-def config_logging():
-    log_formatter = logging.Formatter(
-        '%(asctime)-15s [%(levelname)s] %(funcName)s(%(lineno)d) %(message)s'
-    )
-    handler = RotatingFileHandler(
-        f'{config.LOG_PATH}/stego-retweet.log',
-        mode='a',
-        maxBytes=config.LOG_MAX_MEGABYTES * 1024 * 1024,  # Megabytes
-        backupCount=config.LOG_MAX_FILES,
-        encoding=None,
-        delay=0
-    )
-    handler.setFormatter(log_formatter)
-    handler.setLevel(config.TRACE_LEVEL)
-
-    log.addHandler(handler)
-    log.setLevel(config.TRACE_LEVEL)
+log = app_logger.get_logger(__name__)
 
 
 def get_args():
@@ -93,11 +71,7 @@ using retweets. With this tool you can hide two chars per retweet.'
 
 
 def main():
-
-    if not os.path.exists(config.LOG_PATH):
-        os.makedirs(config.LOG_PATH)
-
-    config_logging()
+    log.info("Starting program.")
 
     args = get_args()
     words = load_words('db/words.txt')
@@ -119,6 +93,8 @@ def main():
     if args.mode == 'recv':
         seq_list = read_message(args.account, words, args.retweets)
         print(unhide(seq_list))
+
+    log.info("Finishing program.")
 
 
 if __name__ == '__main__':

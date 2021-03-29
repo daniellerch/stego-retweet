@@ -6,7 +6,7 @@ def str_to_code(s):
     calculated offset.
 
     Attributes:
-        :s (string): String to code.
+        :s (str): String to code.
     """
 
     while len(s) % config.CHARS_X_INTERACTION != 0:

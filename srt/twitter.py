@@ -1,10 +1,10 @@
-import logging
 import textwrap
 import tweepy
-from srt import config
+
+from srt import config, app_logger
 from srt.encoding import str_to_code, code_to_str
 
-log = logging.getLogger(__name__)
+log = app_logger.get_logger(__name__)
 
 
 def extract_words(tweet):
