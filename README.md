@@ -95,14 +95,14 @@ To hide a message you have to execute "stegoretweet.py" with the "send" option a
 Example:
 
 ```bash
-~$ python3 stegoretweet.py -m send -ht "music,food,travel" -s "Hello World!"
+~$ python3 stegoretweet.py -m send -s "Hello World!"
 Password: 
-Tweet with id "1386993291334402049" containing the target "texts" successfully retweeted!
-Tweet with id "1386994343437869056" containing the target "guatemala" successfully retweeted!
-Tweet with id "1386993884576821248" containing the target "addressed" successfully retweeted!
-Tweet with id "1386994449436221442" containing the target "kiss" successfully retweeted!
-Tweet with id "1386993412436598793" containing the target "rochester" successfully retweeted!
-Tweet with id "1386992260537929729" containing the target "symbols" successfully retweeted!
+Tweet with id "1386998378488238080" containing the target "texts" successfully retweeted!
+Tweet with id "1386998854034329600" containing the target "guatemala" successfully retweeted!
+Tweet with id "1386998565415931904" containing the target "addressed" successfully retweeted!
+Tweet with id "1386999237292937220" containing the target "kiss" successfully retweeted!
+Tweet with id "1386999212110499842" containing the target "rochester" successfully retweeted!
+Tweet with id "1386998536198262788" containing the target "symbols" successfully retweeted!
 ```
 
 Using the above command yout are going to retweet whatever tweet that serves to hide the message. To have a little control you can provide a list of hashtags. Stego-retweet will hide information in tweets that contain these hashtags if they are found. Otherwise, stego-retweet will use any other tweet.
@@ -110,7 +110,7 @@ Using the above command yout are going to retweet whatever tweet that serves to 
 
 Example:
 ```bash
-~$ python3 stegoretweet.py send "hello world!" "crypto,bitcoin,infosec"
+~$ python3 stegoretweet.py -m send -ht "crypto,bitcoin,infosec" -s "Hello World!"
 Password:
 Tweet with id "989922919383011328" containing the target "attended #crypto" successfully retweeted!
 Tweet with id "988077479037427713" containing the target "conservation #bitcoin" successfully retweeted!
