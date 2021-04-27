@@ -27,11 +27,24 @@ Inside the stego-retweet directory you will find a requirements file for install
 After that, you can execute stego-retweet with:
 
 ```bash
-~$ python3 stegoretweet.py
-Usage:
-    stegoretweet.py <send> <text>
-    stegoretweet.py <send> <text> <hashtag1,hahstag2,hashtagN>
-    stegoretweet.py <recv> <user>
+~$ python3 stegoretweet.py -h
+usage: stegoretweet.py [-h] [-m {send,recv}] [-s SECRET] [-ht HASHTAGS] [-a ACCOUNT] [-r RETWEETS]
+
+Stego-retweet is a tool for hiding messages in Twitter using retweets. With this tool you can hide two
+chars per retweet.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -m {send,recv}, --mode {send,recv}
+                        Mode of execution, to send or recieve messages.
+  -s SECRET, --secret SECRET
+                        Secret to hide.
+  -ht HASHTAGS, --hashtags HASHTAGS
+                        List of hashtags.
+  -a ACCOUNT, --account ACCOUNT
+                        Sender twitter account name, without @.
+  -r RETWEETS, --retweets RETWEETS
+                        Number of recent retweets to search hidden information.
 ```
 
 
@@ -82,14 +95,14 @@ To hide a message you have to execute "stegoretweet.py" with the "send" option a
 Example:
 
 ```bash
-~$ python3 stegoretweet.py send "hello world!"
-Password:
-Tweet with id "1366464152739450883" containing the target "famous" successfully retweeted!
-Tweet with id "1366464284268449793" containing the target "singapore" successfully retweeted!
-Tweet with id "1366464261376122883" containing the target "lion" successfully retweeted!
-Tweet with id "1366464276869902336" containing the target "experiences" successfully retweeted!
-Tweet with id "1366449721003413521" containing the target "televisions" successfully retweeted!
-Tweet with id "1366464269684862979" containing the target "bouquet" successfully retweeted!
+~$ python3 stegoretweet.py -m send -ht "music,food,travel" -s "Hello World!"
+Password: 
+Tweet with id "1386993291334402049" containing the target "texts" successfully retweeted!
+Tweet with id "1386994343437869056" containing the target "guatemala" successfully retweeted!
+Tweet with id "1386993884576821248" containing the target "addressed" successfully retweeted!
+Tweet with id "1386994449436221442" containing the target "kiss" successfully retweeted!
+Tweet with id "1386993412436598793" containing the target "rochester" successfully retweeted!
+Tweet with id "1386992260537929729" containing the target "symbols" successfully retweeted!
 ```
 
 Using the above command yout are going to retweet whatever tweet that serves to hide the message. To have a little control you can provide a list of hashtags. Stego-retweet will hide information in tweets that contain these hashtags if they are found. Otherwise, stego-retweet will use any other tweet.
@@ -113,9 +126,9 @@ To read a message you have to use the option "recv" and the name of the twitter 
 
 Example:
 ```bash
-~$ python3 stegoretweet.py recv UserAccount
-Password:
-r7@8b(hd(,dhello world!
+~$ python3 stegoretweet.py -m recv -a AccountName -r 6
+Password: 
+hello world!
 ```
 
-You can see some garbage in the results. This is due to retweets that does not contains any hidden information.
+You can see some garbage in the results if you choose a too high number of retweets. This is due to retweets that does not contains any hidden information.

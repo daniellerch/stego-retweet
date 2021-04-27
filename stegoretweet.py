@@ -67,32 +67,37 @@ using retweets. With this tool you can hide two chars per retweet.'
     if args.mode == 'recv' and not args.retweets:
         parser.error('--retweets it\'s mandatory when --mode=recv.')
 
-    return args
+    return args, parser
 
 
 def main():
     log.info("Starting program.")
 
-    args = get_args()
-    words = load_words('db/words.txt')
-    password = getpass.getpass().encode('utf-8')
-    password_hex = hashlib.sha256(password).hexdigest()
-    password_int = int(password_hex, 16)
-    random.seed(password_int)
-    random.shuffle(words)
+    args, parser = get_args()
 
-    if args.mode == 'send':
-        msg = args.secret
-        hashtag_list = []
-        if args.hashtags:
-            hashtag_list = args.hashtags.split(',')
-        hashtag_list += ['']
-        seq_list = hide(msg.lower())
-        send_message(seq_list, words, hashtag_list)
+    if args.mode in ["send", "recv"]:
+        words = load_words('db/words.txt')
+        password = getpass.getpass().encode('utf-8')
+        password_hex = hashlib.sha256(password).hexdigest()
+        password_int = int(password_hex, 16)
+        random.seed(password_int)
+        random.shuffle(words)
 
-    if args.mode == 'recv':
-        seq_list = read_message(args.account, words, args.retweets)
-        print(unhide(seq_list))
+        if args.mode == 'send':
+            msg = args.secret
+            hashtag_list = []
+            if args.hashtags:
+                hashtag_list = args.hashtags.split(',')
+            hashtag_list += ['']
+            seq_list = hide(msg.lower())
+            send_message(seq_list, words, hashtag_list)
+
+        elif args.mode == 'recv':
+            seq_list = read_message(args.account, words, args.retweets)
+            print(unhide(seq_list))
+    else:
+        parser.error("Please, provide some arguments")
+
 
     log.info("Finishing program.")
 
