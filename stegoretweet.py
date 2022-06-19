@@ -97,7 +97,6 @@ def main() -> None:
             hashtag_list = args.hashtags.split(',') + [''] if args.hashtags else ['']
             seq_list = hide(msg.lower())
             send_message(seq_list, words, hashtag_list)
-
         elif args.mode == 'recv':
             seq_list = read_message(args.account, words, args.retweets)
             print(unhide(seq_list))

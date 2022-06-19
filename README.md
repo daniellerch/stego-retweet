@@ -27,7 +27,7 @@ Inside the stego-retweet directory you will find a requirements file for install
 After that, you can execute stego-retweet with:
 
 ```bash
-~$ python stegoretweet.py -h
+~$ python3 stegoretweet.py -h
 usage: stegoretweet.py [-h] [-m {send,recv}] [-s SECRET] [-ht HASHTAGS] [-a ACCOUNT] [-r RETWEETS]
 
 Stego-retweet is a tool for hiding messages in Twitter using retweets. With this tool you can hide two
@@ -95,7 +95,7 @@ To hide a message you have to execute "stegoretweet.py" with the "send" option a
 Example:
 
 ```bash
-~$ python stegoretweet.py -m send -s "Hello World!"
+~$ python3 stegoretweet.py -m send -s "Hello World!"
 Password: 
 Tweet with id "1386998378488238080" containing the target "texts" successfully retweeted!
 Tweet with id "1386998854034329600" containing the target "guatemala" successfully retweeted!
@@ -110,7 +110,7 @@ Using the above command yout are going to retweet whatever tweet that serves to 
 
 Example:
 ```bash
-~$ python stegoretweet.py -m send -ht "music,food,travel" -s "Hello World!"
+~$ python3 stegoretweet.py -m send -ht "crypto,bitcoin,infosec" -s "Hello World!"
 Password:
 Tweet with id "989922919383011328" containing the target "attended #crypto" successfully retweeted!
 Tweet with id "988077479037427713" containing the target "conservation #bitcoin" successfully retweeted!
@@ -126,9 +126,9 @@ To read a message you have to use the option "recv" and the name of the Twitter 
 
 Example:
 ```bash
-~$ python stegoretweet.py -m recv -a AccountName -r 6
+~$ python3 stegoretweet.py -m recv -a AccountName -r 6
 Password: 
 hello world!
 ```
 
-You can see some garbage in the results if you choose a too high number of retweets. This is due to retweets that does not contain any hidden information.
+You can see some garbage in the results if you choose a too high number of retweets. This is due to retweets that does not contains any hidden information.
