@@ -21,7 +21,7 @@ First you need to clone the GIT repository:
 Inside the stego-retweet directory you will find a requirements file for installing Python dependencies with pip:
 
 ```bash
-~$ pip3 install -r requirements.txt
+~$ pip install -r requirements.txt
 ```
 
 After that, you can execute stego-retweet with:
@@ -50,11 +50,11 @@ optional arguments:
 
 ## Configuration
 
-To use stego-retweet you need a twitter account with an associated application.
+To use stego-retweet you need a Twitter account with an associated application.
 Please, go to https://apps.twitter.com/.
 
 When you create an application you obtain some access tokens you have to
-configure in the srt/config.py "file".
+configure in the src/config.py "file".
 
 ```bash
 TWITTER_CONSUMER_KEY = 'XXX'
@@ -122,7 +122,7 @@ Tweet with id "989519586155487233" containing the target "complicated #bitcoin" 
 
 ## Unhide a message
 
-To read a message you have to use the option "recv" and the name of the twitter account of the sender (without @). You need to provide the same password used to send the message.
+To read a message you have to use the option "recv" and the name of the Twitter account of the sender (without @). You need to provide the same password used to send the message.
 
 Example:
 ```bash

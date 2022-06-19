@@ -1,18 +1,24 @@
+"""
+stego-retweet.
+"""
 import argparse
 import getpass
 import hashlib
 import random
 
-from srt import app_logger
-from srt.twitter import load_words, hide, unhide, send_message, read_message
+from src import logger
+from src.twitter import load_words, hide, unhide, send_message, read_message
 
-log = app_logger.get_logger(__name__)
+log = logger.get_logger(__name__)
 
 
-def get_args():
+def get_args() -> tuple:
+    """
+    Function to parse program arguments.
+    """
     parser = argparse.ArgumentParser(
-        description='Stego-retweet is a tool for hiding messages in Twitter \
-using retweets. With this tool you can hide two chars per retweet.'
+        description='Stego-retweet is a tool for hiding messages in Twitter using retweets. With this tool you can \
+hide two chars per retweet.'
     )
 
     parser.add_argument(
@@ -70,12 +76,15 @@ using retweets. With this tool you can hide two chars per retweet.'
     return args, parser
 
 
-def main():
-    log.info("Starting program.")
+def main() -> None:
+    """
+    Main function.
+    """
+    log.info('Starting program.')
 
     args, parser = get_args()
 
-    if args.mode in ["send", "recv"]:
+    if args.mode in {'send', 'recv'}:
         words = load_words('db/words.txt')
         password = getpass.getpass().encode('utf-8')
         password_hex = hashlib.sha256(password).hexdigest()
@@ -85,21 +94,16 @@ def main():
 
         if args.mode == 'send':
             msg = args.secret
-            hashtag_list = []
-            if args.hashtags:
-                hashtag_list = args.hashtags.split(',')
-            hashtag_list += ['']
+            hashtag_list = args.hashtags.split(',') + [''] if args.hashtags else ['']
             seq_list = hide(msg.lower())
             send_message(seq_list, words, hashtag_list)
-
         elif args.mode == 'recv':
             seq_list = read_message(args.account, words, args.retweets)
             print(unhide(seq_list))
     else:
-        parser.error("Please, provide some arguments")
+        parser.error('Please, provide some arguments')
 
-
-    log.info("Finishing program.")
+    log.info('Finishing program.')
 
 
 if __name__ == '__main__':
